@@ -3,7 +3,7 @@ import './App.css';
 import axios from 'axios';
 
 const App = () => {
-  const [data, setData] = useState([]);
+  const [entries, setEntries] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const [checkboxes, setCheckboxes] = useState([]);
   const [creditor, setCreditor] = useState('');
@@ -19,7 +19,7 @@ const App = () => {
           'https://raw.githubusercontent.com/StrategicFS/Recruitment/master/data.json'
         );
 
-        setData(result.data);
+        setEntries(result.data);
       } catch (error) {
         console.error(error);
       }
@@ -29,8 +29,9 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    setCheckboxes(new Array(data.length).fill(false));
-  }, [data]);
+    setCheckboxes(new Array(entries.length).fill(false));
+    setSelectAll(false);
+  }, [entries]);
 
   useEffect(() => {
     setCheckboxes(
@@ -52,7 +53,7 @@ const App = () => {
   };
 
   const handleRemove = () => {
-    setData(data.filter((entry, idx) => !checkboxes[idx]));
+    setEntries(entries.filter((entry, idx) => !checkboxes[idx]));
   };
 
   const handleInput = (ev) => {
@@ -65,15 +66,15 @@ const App = () => {
 
   const handleSubmit = async (ev) => {
     ev.preventDefault();
-    setData([
-      ...data,
+    setEntries([
+      ...entries,
       {
-        id: data[data.length - 1].id + 1,
+        id: entries[entries.length - 1].id + 1,
         creditorName: creditor,
         firstName,
         lastName,
         minPaymentPercentage: parseFloat(minPay).toFixed(1),
-        balance: parseFloat(balance).toFixed(2),
+        balance: parseInt(balance),
       },
     ]);
     setCreditor('');
@@ -91,7 +92,9 @@ const App = () => {
   return (
     <div className="App">
       <table>
-        <col width="100px" />
+        <colgroup>
+          <col width="100px" />
+        </colgroup>
         <thead>
           <tr>
             <th className="checkbox">
@@ -109,7 +112,7 @@ const App = () => {
           </tr>
         </thead>
         <tbody>
-          {data.map((entry, idx) => {
+          {entries.map((entry, idx) => {
             return (
               <tr key={entry.id}>
                 <td className="checkbox">
@@ -123,9 +126,7 @@ const App = () => {
                 <td>{entry.firstName}</td>
                 <td>{entry.lastName}</td>
                 <td>{entry.minPaymentPercentage}%</td>
-                {/* <td>{entry.minPaymentPercentage.toFixed(2)}%</td> */}
                 <td>{entry.balance}</td>
-                {/* <td>{entry.balance.toFixed(2)}</td> */}
               </tr>
             );
           })}
@@ -182,7 +183,7 @@ const App = () => {
             <th colSpan={3}></th>
             <th>
               {formatter.format(
-                data.reduce((accum, entry, idx) => {
+                entries.reduce((accum, entry, idx) => {
                   if (checkboxes[idx]) accum += entry.balance;
                   return accum;
                 }, 0)
@@ -190,7 +191,7 @@ const App = () => {
             </th>
           </tr>
           <tr className="totals">
-            <th colSpan={2}>Total Row Count: {data.length}</th>
+            <th colSpan={2}>Total Row Count: {entries.length}</th>
             <th colSpan={2}>
               Check Row Count:{' '}
               {checkboxes.filter((checkbox) => checkbox).length}

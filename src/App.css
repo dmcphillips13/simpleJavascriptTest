@@ -3,11 +3,6 @@ table {
   width: 100%;
 }
 
-input {
-  justify-content: flex-start;
-  border: 0;
-}
-
 th {
   border: 2px black solid;
 }
@@ -22,10 +17,19 @@ td {
   border: 0;
 }
 
+.button-container {
+  border: 0;
+}
+
 button {
   color: white;
   background-color: dodgerblue;
   border-radius: 5px;
+}
+
+input {
+  justify-content: flex-start;
+  border: 0;
 }
 
 .balance > th {
@@ -34,13 +38,5 @@ button {
 }
 
 .totals > th {
-  border: 0;
-}
-
-.totals > th {
-  border: 0;
-}
-
-.button-container {
   border: 0;
 }
